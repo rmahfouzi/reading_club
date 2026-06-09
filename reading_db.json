@@ -1,0 +1,17 @@
+{
+  "config": {
+    "club_name": "باشگاه کتاب‌خوانی",
+    "group_chat_id": "",
+    "timezone_users": "Asia/Tehran",
+    "timezone_cron": "Europe/Stockholm",
+    "min_weekly_days": 5,
+    "starting_lives": 3,
+    "max_lives": 3,
+    "perfect_weeks_for_life_restore": 2,
+    "week_enforce_day": "sunday",
+    "created_at": "2026-06-09T00:00:00Z"
+  },
+  "current_week_id": "2026-W24",
+  "last_updated": "2026-06-09T00:00:00Z",
+  "users": {}
+}
