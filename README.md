@@ -13,8 +13,10 @@ reading_club/
 └── skills/
     ├── reading-bot-chat/
     │   └── SKILL.md             # conversational DM skill (data-isolation sandbox)
-    └── reading-club-enforcer/
-        └── SKILL.md             # automated daily cron skill
+    ├── reading-club-enforcer/
+    │   └── SKILL.md             # automated daily cron skill
+    └── reading-club-reminder/
+        └── SKILL.md             # automated daily reminder cron skill
 ```
 
 Two runtime files are created automatically and are NOT checked in (create empty
@@ -48,6 +50,13 @@ versions on the new machine — see Setup step 4):
   no user interaction, so it cannot be hijacked via prompt injection.
 - Archives each day's log to `log_archive/daily_logs_<date>.txt` and clears
   `daily_logs.txt`.
+
+### 3. `reading-club-reminder` (cron skill)
+- Runs daily at **21:00 Europe/Stockholm**.
+- Posts a single fixed Persian reminder to the group, prompting members who
+  haven't checked in yet to DM the bot before the day ends.
+- Only has `telegram.sendMessage` — no DB access, no admin actions, no user
+  interaction.
 
 ### Game Rules (encoded in `reading_db.json` config + enforcer logic)
 - Goal: 15 min/day, ≥5 days/week.
@@ -105,6 +114,7 @@ TELEGRAM_GROUP_CHAT_ID=-1001234567890
 ```bash
 openclaw skills install /path/to/reading_club/skills/reading-bot-chat
 openclaw skills install /path/to/reading_club/skills/reading-club-enforcer
+openclaw skills install /path/to/reading_club/skills/reading-club-reminder
 openclaw skills list      # confirm both are active
 ```
 
