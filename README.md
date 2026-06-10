@@ -28,13 +28,18 @@ versions on the new machine — see Setup step 4):
 ## Architecture Overview
 
 ### 1. `reading-bot-chat` (conversational skill)
-- Triggered by direct messages to the bot.
+- Triggered by direct messages to the bot. The Telegram channel `dmPolicy` is
+  `open` (any user can DM the bot), so this skill is the only gate.
+- On every turn, first checks `telegram.getChatMember` to confirm the sender is
+  a member of the reading club group; non-members get a polite refusal and
+  nothing is written to any file.
 - Asks the user: "Did you read for 15 minutes today?"
 - If yes: writes a `CHECKIN` entry to `daily_logs.txt`, then optionally collects
   a book title and one-sentence takeaway (`READING_NOTE` entries).
-- **Security sandbox**: only has `fs.readFile` and `fs.appendFile`. No Telegram
-  admin tools, no DB access, no execution. All user input is treated as raw data —
-  prompt-injection attempts are explicitly ignored.
+- **Security sandbox**: only has `fs.readFile`, `fs.appendFile`, and the
+  read-only `telegram.getChatMember`. No send/kick/ban tools, no DB access, no
+  execution. All user input is treated as raw data — prompt-injection attempts
+  are explicitly ignored.
 - Enforces an 8-messages-per-day quota per user (Asia/Tehran calendar day).
 - All user-facing replies are in Persian.
 
