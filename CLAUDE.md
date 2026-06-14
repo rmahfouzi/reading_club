@@ -90,19 +90,29 @@ followed by a `<system>` prompt and `<tools>` reference.
   - Runs unattended, no user input — un-hijackable by design, since the
     report bot (which does talk to users) only ever appends to
     `daily_logs.txt` and never reaches OpenClaw or these tools.
-  - Six ordered tasks (load state → process log → Sunday weekly enforcement →
-    Sunday leaderboard messages → kick 0-life users → archive + persist).
-    The `reading_db.json` user-record schema is fully specified in the
-    prompt; if you change it, update both the schema block and any code that
-    reads existing `reading_db.json` files (migration is manual — there's no
-    migration tooling).
+  - Seven ordered tasks (load state → process log → Sunday weekly enforcement →
+    Sunday leaderboard messages → kick 0-life users → archive + persist →
+    admin daily report). The `reading_db.json` user-record schema is fully
+    specified in the prompt; if you change it, update both the schema block
+    and any code that reads existing `reading_db.json` files (migration is
+    manual — there's no migration tooling).
   - All group-facing messages are fixed Persian templates — the prompt
     explicitly forbids improvising wording.
+  - TASK 7 accumulates an in-memory `errors` list across TASKs 1-6 (populated
+    per the ERROR HANDLING section) and sends one plain-English daily report
+    to `ADMIN_USER_ID`, including that error list (or "No errors").
 
 - **`reading-club-reminder`** (cron, `0 21 * * *` Europe/Stockholm)
-  - Only tool: `telegram.sendMessage`. Sends exactly one fixed Persian
-    message, no state read/write. References the report bot's username,
+  - Only tool: `telegram.sendMessage`. Sends one fixed Persian message to the
+    group, no state read/write. References the report bot's username,
     `@ketabyaar_bot`.
+  - TASK 2 sends a plain-English status report (success or 🚨 error) to
+    `ADMIN_USER_ID` every run.
+
+Both cron skills' `env:` blocks include `ADMIN_USER_ID: "${TELEGRAM_ADMIN_USER_ID}"`
+(set in `.env` / OpenClaw env config — Telegram user id of `@r.mahfoozi`).
+Note: `@clubKetab_bot` can only DM `ADMIN_USER_ID` if that user has previously
+sent `/start` to `@clubKetab_bot` (Telegram API constraint).
 
 When editing a `SKILL.md`, preserve the `tools:` allowlist as the actual
 security boundary — never give a cron skill a `trigger: dm`, and never add

@@ -199,7 +199,22 @@ systemctl --user status reading-club-report-bot.service
 journalctl --user -u reading-club-report-bot.service -f
 ```
 
-### 8. Go Live
+### 8. Admin Reports
+Both `reading-club-enforcer` and `reading-club-reminder` send a daily status
+report (and any error notices) to `ADMIN_USER_ID` via `@clubKetab_bot`.
+
+Set in `.env`:
+```bash
+TELEGRAM_ADMIN_USER_ID=<your Telegram user id>
+```
+
+**Important:** Telegram bots can only message a user who has previously
+started a conversation with that bot. The admin (`@r.mahfoozi`) must send
+`/start` to `@clubKetab_bot` once — otherwise these reports will fail to
+deliver (the failure is recorded in the enforcer's `errors` list but does
+not stop the run).
+
+### 9. Go Live
 - DM the report bot to test the check-in flow.
 - The enforcer runs automatically at 08:00 Europe/Stockholm daily.
 - Announce the group and share the pinned welcome message with members.
