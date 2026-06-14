@@ -70,7 +70,17 @@ ASK_CHECKIN, ASK_BOOK, ASK_TAKEAWAY = range(3)
 MSG_NOT_MEMBER = "این ربات فقط برای اعضای باشگاه کتاب‌خوانیه. 📚"
 MSG_QUOTA_EXCEEDED = "⛔ امروز سهمیه‌ی پیامت تموم شده! فردا دوباره برگرد. 📅"
 MSG_ALREADY_CHECKED_IN = "امروز قبلاً گزارشت رو ثبت کردم! ✅ فردا دوباره برگرد. کتاب بخون! 📚"
-MSG_OPENER = "سلام! 👋 امروز ۱۵ دقیقه کتاب خوندی؟"
+MSG_OPENER = "سلام! 👋 گزارش روز {weekday} رو می‌گیریم. امروز ۱۵ دقیقه کتاب خوندی؟"
+
+WEEKDAY_NAMES_FA = {
+    0: "دوشنبه",
+    1: "سه‌شنبه",
+    2: "چهارشنبه",
+    3: "پنجشنبه",
+    4: "جمعه",
+    5: "شنبه",
+    6: "یکشنبه",
+}
 MSG_YES_FOLLOWUP = (
     "آفرین! ✅ حضورت ثبت شد. 💪\n"
     "داری چی می‌خونی؟ اگه دوست داری بگو، وگرنه دکمه‌ی رد کردن رو بزن! (اختیاریه)"
@@ -100,6 +110,10 @@ log = logging.getLogger("report_bot")
 
 def today_local() -> str:
     return datetime.now(USER_TZ).strftime("%Y-%m-%d")
+
+
+def today_weekday_fa() -> str:
+    return WEEKDAY_NAMES_FA[datetime.now(USER_TZ).weekday()]
 
 
 def load_json(path: Path, default):
@@ -223,7 +237,9 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
         InlineKeyboardButton(BTN_YES, callback_data=CB_YES),
         InlineKeyboardButton(BTN_NO, callback_data=CB_NO),
     ]])
-    await update.message.reply_text(MSG_OPENER, reply_markup=keyboard)
+    await update.message.reply_text(
+        MSG_OPENER.format(weekday=today_weekday_fa()), reply_markup=keyboard
+    )
     return ASK_CHECKIN
 
 
