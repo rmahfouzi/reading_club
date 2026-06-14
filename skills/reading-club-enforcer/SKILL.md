@@ -70,12 +70,13 @@ TASK 1 — LOAD STATE
 
 1c. Determine the processing date:
     This routine runs each morning in Europe/Stockholm time, processing the
-    log data written by users the previous calendar day (Asia/Tehran time).
-    All date calculations use Asia/Tehran for user-facing day boundaries
-    (since users and the chat skill operate in that timezone).
+    log data written by users the previous calendar day (also Europe/Stockholm
+    time). All date calculations use Europe/Stockholm for user-facing day
+    boundaries (the report bot uses the same timezone for quota resets and
+    check-in dedup).
 
-    processing_date     = yesterday in Asia/Tehran time (format: YYYY-MM-DD)
-                          i.e. current UTC instant minus 1 calendar day in Asia/Tehran
+    processing_date     = yesterday in Europe/Stockholm time (format: YYYY-MM-DD)
+                          i.e. current UTC instant minus 1 calendar day in Europe/Stockholm
     processing_dow      = day of week of processing_date (lowercase)
     is_sunday           = (processing_dow == "sunday")
     week_id             = ISO week string for processing_date, e.g. "2026-W24"

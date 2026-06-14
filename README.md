@@ -54,8 +54,8 @@ open DM surface that strangers can talk to.
 - On every message, first checks `getChatMember` against the reading club
   group to confirm the sender is a member; non-members get a polite refusal
   and nothing is written to any file.
-- Enforces an 8-messages-per-day quota per user (Asia/Tehran calendar day),
-  tracked in `message_counts.json`.
+- Enforces an 8-messages-per-day quota per user (Europe/Stockholm calendar
+  day), tracked in `message_counts.json`.
 - Conversation (via inline-button keyboards, not free-text parsing):
   - "Did you read 15 minutes today?" → یس/نه
   - If yes and not already checked in today: appends a `CHECKIN` entry to
@@ -66,7 +66,8 @@ open DM surface that strangers can talk to.
 
 ### 2. `reading-club-enforcer` (OpenClaw cron skill)
 - Runs daily at **08:00 Europe/Stockholm** (processes the *previous* calendar
-  day's log, since users operate in Asia/Tehran time).
+  day's log; both the report bot and this skill use Europe/Stockholm for all
+  day-boundary calculations).
 - Reads `daily_logs.txt`, updates `reading_db.json` (attendance, lives, streaks).
 - On Sundays (i.e. the processed week ending Sunday): evaluates the 5-day/week
   goal, deducts/restores lives, posts a Persian leaderboard + warnings to the group.
@@ -153,15 +154,50 @@ openclaw skills list      # confirm both are active
 ### 7. Run the Report Bot
 ```bash
 cd /path/to/reading_club/report_bot
-python3 -m venv venv && source venv/bin/activate
+python3 -m venv --without-pip venv && source venv/bin/activate
+python -m ensurepip --upgrade || curl -sS https://bootstrap.pypa.io/get-pip.py | python  # if ensurepip is unavailable
 pip install -r requirements.txt
 cp .env.example .env   # fill in REPORT_BOT_TOKEN and TELEGRAM_GROUP_CHAT_ID
-set -a && source .env && set +a
-python report_bot.py
 ```
-Run it under your favourite process manager (systemd, tmux, etc.) so it
-keeps polling. It only needs `daily_logs.txt` and `message_counts.json` —
-both live in the `reading_club/` project root by default.
+
+It only needs `daily_logs.txt` and `message_counts.json` — both live in the
+`reading_club/` project root by default.
+
+**Run it as a systemd user service** so it survives reboots/power
+outages and restarts automatically on crash. Create
+`~/.config/systemd/user/reading-club-report-bot.service`:
+
+```ini
+[Unit]
+Description=Reading Club Report Bot (@ketabyaar_bot)
+After=network-online.target
+Wants=network-online.target
+StartLimitBurst=5
+StartLimitIntervalSec=60
+
+[Service]
+WorkingDirectory=/path/to/reading_club/report_bot
+ExecStart=/path/to/reading_club/report_bot/venv/bin/python /path/to/reading_club/report_bot/report_bot.py
+EnvironmentFile=/path/to/reading_club/report_bot/.env
+Restart=always
+RestartSec=5
+KillMode=control-group
+
+[Install]
+WantedBy=default.target
+```
+
+```bash
+systemctl --user daemon-reload
+systemctl --user enable --now reading-club-report-bot.service
+loginctl enable-linger "$USER"   # so the service starts at boot, even logged out
+```
+
+Check status/logs with:
+```bash
+systemctl --user status reading-club-report-bot.service
+journalctl --user -u reading-club-report-bot.service -f
+```
 
 ### 8. Go Live
 - DM the report bot to test the check-in flow.

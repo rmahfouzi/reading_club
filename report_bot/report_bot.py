@@ -47,7 +47,7 @@ LOG_FILE = Path(os.environ.get("LOG_FILE", PROJECT_ROOT / "daily_logs.txt"))
 MSG_COUNT_FILE = Path(os.environ.get("MSG_COUNT_FILE", PROJECT_ROOT / "message_counts.json"))
 
 MAX_DAILY_MESSAGES = int(os.environ.get("MAX_DAILY_MESSAGES", "8"))
-USER_TZ = ZoneInfo("Asia/Tehran")
+USER_TZ = ZoneInfo("Europe/Stockholm")
 
 # Conversation states
 ASK_CHECKIN, ASK_BOOK, ASK_TAKEAWAY = range(3)
@@ -85,7 +85,7 @@ log = logging.getLogger("report_bot")
 
 # ── Helpers ──────────────────────────────────────────────────────────────────
 
-def today_tehran() -> str:
+def today_local() -> str:
     return datetime.now(USER_TZ).strftime("%Y-%m-%d")
 
 
@@ -110,7 +110,7 @@ def check_and_increment_quota(uid: str) -> bool:
     """Returns True if the user is still within today's quota (and increments
     the counter), False if the quota is already exhausted."""
     counts = load_json(MSG_COUNT_FILE, {})
-    today = today_tehran()
+    today = today_local()
 
     # Drop old dates to keep the file small.
     counts = {today: counts.get(today, {})}
@@ -128,7 +128,7 @@ def check_and_increment_quota(uid: str) -> bool:
 def has_checked_in_today(uid: str) -> bool:
     if not LOG_FILE.exists():
         return False
-    today = today_tehran()
+    today = today_local()
     for line in LOG_FILE.read_text(encoding="utf-8").splitlines():
         line = line.strip()
         if not line:
@@ -140,12 +140,12 @@ def has_checked_in_today(uid: str) -> bool:
         if entry.get("type") != "CHECKIN" or entry.get("uid") != uid:
             continue
         ts = entry.get("ts", "")
-        if ts.startswith(today) or _utc_ts_to_tehran_date(ts) == today:
+        if ts.startswith(today) or _utc_ts_to_local_date(ts) == today:
             return True
     return False
 
 
-def _utc_ts_to_tehran_date(ts: str) -> str | None:
+def _utc_ts_to_local_date(ts: str) -> str | None:
     try:
         dt = datetime.fromisoformat(ts.replace("Z", "+00:00"))
     except ValueError:

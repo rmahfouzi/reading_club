@@ -53,23 +53,22 @@ Data flows in one direction through the day:
 4. Each evening, `reading-club-reminder` posts one fixed nudge message — pure
    broadcast, no state.
 
-**Timezone split is intentional and load-bearing**: user-facing day
-boundaries (quota resets, check-in dedup, weekly scoring) are computed in
-**Asia/Tehran**, while all OpenClaw crons run on **Europe/Stockholm**
-wall-clock time. The enforcer's "today" run always processes *yesterday's*
-(Tehran) log. `report_bot.py` uses `Asia/Tehran` directly for the same
-boundaries (see `today_tehran()`).
+**Everything runs on Europe/Stockholm wall-clock time**: OpenClaw crons,
+user-facing day boundaries (quota resets, check-in dedup, weekly scoring),
+and `report_bot.py` all use Europe/Stockholm. The enforcer's "today" run
+always processes *yesterday's* log. `report_bot.py` uses `Europe/Stockholm`
+directly for the same boundaries (see `today_local()`).
 
 ## The report bot (`report_bot/report_bot.py`)
 
-A `python-telegram-bot` (v21, async) `ConversationHandler` — deterministic
+A `python-telegram-bot` (v22, async) `ConversationHandler` — deterministic
 Python, no LLM, so there's no prompt-injection surface. Key points:
 
 - Every reply is a fixed Persian template; conversation flow uses inline
   keyboard buttons (یس/نه, رد کردن) rather than free-text parsing.
 - First step on every `/start`/message is a `getChatMember` check against
   `TELEGRAM_GROUP_CHAT_ID` — the report bot must be a member of that group.
-- 8-messages/day quota per user (Asia/Tehran calendar day) in
+- 8-messages/day quota per user (Europe/Stockholm calendar day) in
   `message_counts.json`, plus a same-day duplicate-CHECKIN guard read
   straight from `daily_logs.txt`.
 - Writes the exact same `CHECKIN` / `READING_NOTE` JSON-line schema the
@@ -135,8 +134,8 @@ in Persian and consistent in tone with existing templates.
 
 There's no CI.
 - OpenClaw skill changes: `openclaw skills install /path/to/reading_club/skills/<skill-name>`
-- Report bot changes: restart the `report_bot.py` process (it's a plain
-  long-running script — see `README.md` for how it's run).
+- Report bot changes: `systemctl --user restart reading-club-report-bot.service`
+  (runs as a systemd user service — see `README.md` for the unit file).
 
 See `README.md` for full from-scratch setup (both bot tokens, group chat ID,
 env vars, runtime file bootstrap).
