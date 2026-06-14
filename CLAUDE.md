@@ -66,8 +66,11 @@ Python, no LLM, so there's no prompt-injection surface. Key points:
 
 - Every reply is a fixed Persian template; conversation flow uses inline
   keyboard buttons (یس/نه, رد کردن) rather than free-text parsing.
-- First step on every `/start`/message is a `getChatMember` check against
-  `TELEGRAM_GROUP_CHAT_ID` — the report bot must be a member of that group.
+- First step on every `/start`/message is a `getChatMember` check against the
+  group chat ID — the report bot must be a member of that group.
+- The group chat ID is read from `reading_db.json`'s `config.group_chat_id`
+  (the same source of truth the enforcer uses), not from an env var — so it
+  survives reboots even if env vars are lost.
 - 8-messages/day quota per user (Europe/Stockholm calendar day) in
   `message_counts.json`, plus a same-day duplicate-CHECKIN guard read
   straight from `daily_logs.txt`.
@@ -75,8 +78,8 @@ Python, no LLM, so there's no prompt-injection surface. Key points:
   enforcer expects (see below) — if you change this schema, update both
   `report_bot.py`'s `append_log_entry()` and the enforcer's parsing logic
   and schema docs together.
-- Config is via env vars (`REPORT_BOT_TOKEN`, `TELEGRAM_GROUP_CHAT_ID`,
-  optional `LOG_FILE`/`MSG_COUNT_FILE`/`MAX_DAILY_MESSAGES`) — see
+- Config is via env vars (`REPORT_BOT_TOKEN`, optional
+  `DB_FILE`/`LOG_FILE`/`MSG_COUNT_FILE`/`MAX_DAILY_MESSAGES`) — see
   `report_bot/.env.example`.
 
 ## The OpenClaw cron skills

@@ -157,7 +157,9 @@ cd /path/to/reading_club/report_bot
 python3 -m venv --without-pip venv && source venv/bin/activate
 python -m ensurepip --upgrade || curl -sS https://bootstrap.pypa.io/get-pip.py | python  # if ensurepip is unavailable
 pip install -r requirements.txt
-cp .env.example .env   # fill in REPORT_BOT_TOKEN and TELEGRAM_GROUP_CHAT_ID
+cp .env.example .env   # fill in REPORT_BOT_TOKEN
+# The group chat ID is read from reading_db.json's config.group_chat_id
+# (filled in step 5 above) — no env var needed for the report bot.
 ```
 
 It only needs `daily_logs.txt` and `message_counts.json` — both live in the

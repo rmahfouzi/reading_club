@@ -12,8 +12,12 @@ is the conversation state machine below.
 Run:
     pip install -r requirements.txt
     export REPORT_BOT_TOKEN=...
-    export TELEGRAM_GROUP_CHAT_ID=-100...
     python report_bot.py
+
+The Telegram group chat ID is NOT read from the environment — it's read from
+reading_db.json's config.group_chat_id, the same source of truth the
+reading-club-enforcer skill uses. This avoids depending on an env var that
+could be missing after a reboot.
 """
 
 from __future__ import annotations
@@ -40,11 +44,20 @@ from telegram.ext import (
 # ── Configuration ────────────────────────────────────────────────────────────
 
 REPORT_BOT_TOKEN = os.environ["REPORT_BOT_TOKEN"]
-GROUP_CHAT_ID = os.environ["TELEGRAM_GROUP_CHAT_ID"]
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
+DB_FILE = Path(os.environ.get("DB_FILE", PROJECT_ROOT / "reading_db.json"))
 LOG_FILE = Path(os.environ.get("LOG_FILE", PROJECT_ROOT / "daily_logs.txt"))
 MSG_COUNT_FILE = Path(os.environ.get("MSG_COUNT_FILE", PROJECT_ROOT / "message_counts.json"))
+
+
+def _load_group_chat_id() -> str:
+    with DB_FILE.open("r", encoding="utf-8") as f:
+        db = json.load(f)
+    return str(db["config"]["group_chat_id"])
+
+
+GROUP_CHAT_ID = _load_group_chat_id()
 
 MAX_DAILY_MESSAGES = int(os.environ.get("MAX_DAILY_MESSAGES", "8"))
 USER_TZ = ZoneInfo("Europe/Stockholm")
