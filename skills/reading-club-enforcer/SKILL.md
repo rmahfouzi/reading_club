@@ -13,8 +13,9 @@ timezone: Europe/Stockholm
 channel: telegram     # name of the configured OpenClaw channel (used for telegram.* tools)
 
 # ── Tool Allowlist ─────────────────────────────────────────────────────────────
-# This routine has admin Telegram tools, but they are only reachable here,
-# never in the conversational reading-bot-chat skill.
+# This routine has admin Telegram tools, but they are only reachable here.
+# Daily check-ins are collected entirely outside OpenClaw by the separate
+# report_bot/ script, which only ever appends to daily_logs.txt.
 tools:
   - fs.readFile
   - fs.writeFile

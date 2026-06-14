@@ -2,3 +2,6 @@ daily_logs.txt
 message_counts.json
 log_archive/
 .env
+report_bot/.env
+report_bot/venv/
+report_bot/__pycache__/

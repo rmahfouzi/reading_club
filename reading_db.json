@@ -12,6 +12,25 @@
     "created_at": "2026-06-09T00:00:00Z"
   },
   "current_week_id": "2026-W24",
-  "last_updated": "2026-06-09T00:00:00Z",
-  "users": {}
+  "last_updated": "2026-06-13T06:00:00Z",
+  "users": {
+    "202806975": {
+      "uid": "202806975",
+      "username": "S_Z_D3822",
+      "full_name": "Seyedeh zahra dashti",
+      "lives": 3,
+      "days_read": [
+        "2026-06-11"
+      ],
+      "total_days_read": 1,
+      "consecutive_perfect_weeks": 0,
+      "this_week_missed": false,
+      "last_checkin": "2026-06-11",
+      "last_book": null,
+      "last_takeaways": [],
+      "is_active": true,
+      "kicked_at": null,
+      "joined_at": "2026-06-11"
+    }
+  }
 }
