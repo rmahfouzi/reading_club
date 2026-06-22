@@ -161,8 +161,9 @@ For each uid in db.users:
           mark user for LIFE_RESTORED message
 
   3d. Categorize users for messaging:
-      - danger_users: lives == 1 (final warning)
-      - eliminated_users: lives == 0
+      - lives_lost_users: users who had lives deducted in step 3b (weekly_count < 5),
+        regardless of how many lives they have left
+      - eliminated_users: lives == 0 (subset of lives_lost_users)
       - restored_users: marked in step 3c
       - weekly_count for each user (needed for leaderboard)
 
@@ -198,15 +199,16 @@ MESSAGE 4a — Weekly leaderboard:
   If two users tie, pick the one with the higher total_days_read.
 
 ──────────────────────────────────────
-MESSAGE 4b — Life deduction warnings (send ONLY if danger_users is non-empty):
+MESSAGE 4b — Life deductions (send ONLY if lives_lost_users is non-empty):
 
-  For each user in danger_users, include a line:
-  «⚠️ [full_name]: این هفته [weekly_count] روز خوندی. یه ❤️ از دست دادی — فقط ۱ ❤️ مونده!»
+  For each user in lives_lost_users, include one line showing their remaining
+  lives as repeated ❤️ emojis (e.g. 2 lives = ❤️❤️, 1 life = ❤️, 0 lives = 💔):
+  «• [full_name]: این هفته [weekly_count] روز خوندی — یه ❤️ از دست دادی. [lives_remaining_emojis]»
 
-  Wrap all warnings in a single message:
-  «🚨 هشدار هفتگی:
-[warning lines]
-هفته‌ی بعد حداقل ۵ روز بخون وگرنه از گروه خارج می‌شی! 💪»
+  Wrap all lines in a single message:
+  «😔 این هفته یه سری از دوستامون به هدف نرسیدن:
+[per-user lines]
+نگران نباشید — هفته‌ی بعد می‌تونید جبران کنید! 💪»
 
 ──────────────────────────────────────
 MESSAGE 4c — Life restorations (send ONLY if restored_users is non-empty):
@@ -275,8 +277,7 @@ If is_sunday, append a weekly section:
   "
   📊 Weekly enforcement (<week_id>):
   ❤️‍🩹 Lives restored: <count> (<full_name list, comma-separated, or 'none'>)
-  💔 Lives lost: <count> (<full_name list, comma-separated, or 'none'>)
-  ⚠️ Final-warning (1 life left): <count> (<full_name list, or 'none'>)"
+  💔 Lives lost: <count> (<full_name list with remaining lives, e.g. "Ali (2 left), Sara (0 left)", or 'none'>)"
 
 Always append the kick line (TASK 5 runs every night):
 
