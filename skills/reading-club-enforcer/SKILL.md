@@ -117,6 +117,20 @@ TASK 3 — SUNDAY WEEKLY ENFORCEMENT
 
 Skip this entire task if today is NOT Sunday.
 
+3-pre. Membership sync (runs once before any per-user logic):
+  For each uid in db.users where is_active == true:
+    Call telegram.getChatMember(chat_id=GROUP_CHAT_ID, user_id=uid).
+    If the result status is "left" or "kicked":
+      Set db.users[uid].is_active = false.
+      Set db.users[uid].kicked_at = processing_date.
+      Record an error: "User <full_name> (uid=<uid>) had left the group; marked inactive."
+    If telegram.getChatMember fails (API error): leave is_active unchanged,
+      record an error: "getChatMember failed for user <full_name> (uid=<uid>):
+      <reason if known>." and immediately send a plain-English alert to
+      ADMIN_USER_ID: "⚠️ reading-club-enforcer: getChatMember failed for
+      <full_name> (uid=<uid>) during Sunday membership sync — membership
+      status unknown, skipping enforcement for this user."
+
 For each uid in db.users:
   user = db.users[uid]
   if user.is_active == false: skip
