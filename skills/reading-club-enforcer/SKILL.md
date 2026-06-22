@@ -187,10 +187,15 @@ MESSAGE 4a — Weekly leaderboard:
 ...
 
 📚 مجموع روزهای مطالعه این هفته: [sum of all weekly_counts] روز
-🔥 رکورد باشگاه: [highest total_days_read across all users] روز کل — [username]»
+🔥 رکورد باشگاه: [longest_streak] روز پشت سر هم — [full_name of that user]»
 
   Build the leaderboard rows dynamically from the sorted list. Show all active users.
   Use emoji medals only for ranks 1–3. For the rest, use a bullet (•).
+
+  For the record line: compute each active user's longest consecutive-day streak
+  from their full days_read array (longest unbroken run of back-to-back calendar
+  days). Show the user with the highest such streak and the streak length.
+  If two users tie, pick the one with the higher total_days_read.
 
 ──────────────────────────────────────
 MESSAGE 4b — Life deduction warnings (send ONLY if danger_users is non-empty):
