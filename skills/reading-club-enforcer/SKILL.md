@@ -87,6 +87,21 @@ TASK 1 — LOAD STATE
     is_sunday           = (processing_dow == "sunday")
     week_id             = ISO week string for processing_date, e.g. "2026-W24"
 
+1d. IDEMPOTENCY GUARD (run BEFORE any write, message, archive, or kick):
+    This run must be a no-op if processing_date was already handled, so a
+    duplicate cron fire (or manual re-trigger) cannot double-deduct lives,
+    re-kick, re-post, or overwrite a good archive with an empty log. Check BOTH
+    signals:
+      - Does ./log_archive/daily_logs_[processing_date].txt already exist?
+        Call fs.readFile on it; a non-empty result means it exists.
+      - Is db.last_processed_date == processing_date?
+    If EITHER is true, treat this run as a duplicate fire. Make NO changes:
+    do not modify or write reading_db.json, do not archive, do not reset
+    daily_logs.txt, do not send any group or admin message, and do not kick
+    anyone. Stop immediately. (TASK 7 still runs: report status
+    "Skipped — [processing_date] already processed (duplicate fire)." with no
+    errors, then end.)
+
 ═══════════════════════════════════════
 TASK 2 — PROCESS TODAY'S LOG ENTRIES
 ═══════════════════════════════════════
@@ -203,7 +218,7 @@ MESSAGE 4b — Life deductions (send ONLY if lives_lost_users is non-empty):
 
   For each user in lives_lost_users, include one line showing their remaining
   lives as repeated ❤️ emojis (e.g. 2 lives = ❤️❤️, 1 life = ❤️, 0 lives = 💔):
-  «• [full_name]: این هفته [weekly_count] روز خوندی — یه ❤️ از دست دادی. [lives_remaining_emojis]»
+  «• [full_name]: این هفته [weekly_count] روز خوندی — یه ❤️ از دست دادی. جون باقی‌مونده: [lives_remaining_emojis]»
 
   Wrap all lines in a single message:
   «😔 این هفته یه سری از دوستامون به هدف نرسیدن:
@@ -252,6 +267,7 @@ TASK 6 — ARCHIVE LOG AND PERSIST DATABASE
 
   6b. Update metadata on the database object:
       db.last_updated = current ISO timestamp (UTC)
+      db.last_processed_date = processing_date   (idempotency stamp; see TASK 1d)
       If today is Sunday: db.current_week_id = next_week_id (advance the week)
 
   6c. Persist the database:
@@ -306,6 +322,7 @@ Top-level structure of reading_db.json:
   "config": { ... },         // static club configuration — do not modify at runtime
   "current_week_id": "YYYY-Www",
   "last_updated": "<ISO timestamp>",
+  "last_processed_date": "YYYY-MM-DD",   // last processing_date handled (idempotency; TASK 1d)
   "users": {
     "<uid>": { <user record> },
     ...

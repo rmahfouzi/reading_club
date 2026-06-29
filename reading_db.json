@@ -11,26 +11,254 @@
     "week_enforce_day": "sunday",
     "created_at": "2026-06-09T00:00:00Z"
   },
-  "current_week_id": "2026-W24",
-  "last_updated": "2026-06-14T06:00:00Z",
+  "current_week_id": "2026-W27",
+  "last_updated": "2026-06-29T06:00:00Z",
   "users": {
     "202806975": {
       "uid": "202806975",
       "username": "S_Z_D3822",
       "full_name": "Seyedeh zahra dashti",
-      "lives": 3,
+      "lives": 1,
       "days_read": [
-        "2026-06-11"
+        "2026-06-11",
+        "2026-06-15",
+        "2026-06-16"
       ],
-      "total_days_read": 1,
+      "total_days_read": 3,
       "consecutive_perfect_weeks": 0,
-      "this_week_missed": false,
-      "last_checkin": "2026-06-11",
+      "this_week_missed": true,
+      "last_checkin": "2026-06-16",
       "last_book": null,
       "last_takeaways": [],
       "is_active": true,
       "kicked_at": null,
       "joined_at": "2026-06-11"
+    },
+    "1591442677": {
+      "uid": "1591442677",
+      "username": "rmahfouzi",
+      "full_name": "Rouhollah Mahfouzi",
+      "lives": 2,
+      "days_read": [
+        "2026-06-14"
+      ],
+      "total_days_read": 1,
+      "consecutive_perfect_weeks": 0,
+      "this_week_missed": true,
+      "last_checkin": "2026-06-14",
+      "last_book": "Judas",
+      "last_takeaways": [
+        "جالب بود!"
+      ],
+      "is_active": false,
+      "kicked_at": "2026-06-28",
+      "joined_at": "2026-06-14"
+    },
+    "54995727": {
+      "uid": "54995727",
+      "username": "rmahfoozi",
+      "full_name": "‌Rouhollah Mahfouzi",
+      "lives": 3,
+      "days_read": [
+        "2026-06-14",
+        "2026-06-15",
+        "2026-06-16",
+        "2026-06-17",
+        "2026-06-18",
+        "2026-06-19",
+        "2026-06-20",
+        "2026-06-22",
+        "2026-06-23",
+        "2026-06-24",
+        "2026-06-25",
+        "2026-06-27"
+      ],
+      "total_days_read": 12,
+      "consecutive_perfect_weeks": 0,
+      "this_week_missed": false,
+      "last_checkin": "2026-06-27",
+      "last_book": "به نوجوان گفتن و از نوجوان شنیدن",
+      "last_takeaways": [
+        "خوبه!",
+        "تنبیه سلاح اشتباهی هست و باعث اصلاح رفتار  نوجوان نخواهد شد بلکه باعث میشه تلاش کنه دفعات بعد مخفیانه تر اشتباهش رو تکرار کنه.",
+        "رسیدن به راهکار مشترک از طریق همفکری با نوجوان و نوشتن راه حل هایی که به ذهن میرسه و انتخاب بهترین راه حل که همه راضی باشند."
+      ],
+      "is_active": true,
+      "kicked_at": null,
+      "joined_at": "2026-06-14"
+    },
+    "52956989": {
+      "uid": "52956989",
+      "username": "Atefe_yarimoghadam",
+      "full_name": "Atefe",
+      "lives": 3,
+      "days_read": [
+        "2026-06-16",
+        "2026-06-17",
+        "2026-06-18",
+        "2026-06-19",
+        "2026-06-20",
+        "2026-06-21",
+        "2026-06-22",
+        "2026-06-23",
+        "2026-06-24",
+        "2026-06-25",
+        "2026-06-26",
+        "2026-06-27",
+        "2026-06-28"
+      ],
+      "total_days_read": 13,
+      "consecutive_perfect_weeks": 0,
+      "this_week_missed": false,
+      "last_checkin": "2026-06-28",
+      "last_book": "کتاب نیروی حال اثر اکهارت تله",
+      "last_takeaways": [
+        "جدا کردن ذهن از ماهیت وجود ، رسیدن به سکوت ذهنی و دریافت اصل بودن",
+        "تا زمانی که خود را از چیرگی ذهن نرهانید، \nعشق، شادمانی و آرامش واقعی شکوفا نمیشود .\nبا حالت بی ذهنی به اصل بودن متصل می‌شویم.",
+        "مراقب هر حالت دفاعی درون خود باشید، از چه چیزی دفاع میکنید ؟\nمرگ ، برهنگی از تمامی آن پوشش هایی است که شما نیستید.",
+        "کتاب خوبیه ، دوست دارم بخونمش و بهش فکر کنم",
+        "اینکه باید به بی ذهنی برسم",
+        "یافتن واقعیت بی زوال وجود و مفهوم جسم درون",
+        "ما اینجا هستیم تا از نیت الهی برای آفرینش هستی ،پرده برداشته شود . اهمیت ما در این است ."
+      ],
+      "is_active": true,
+      "kicked_at": null,
+      "joined_at": "2026-06-16"
+    },
+    "180169061": {
+      "uid": "180169061",
+      "username": "unknown",
+      "full_name": "Atefeh",
+      "lives": 2,
+      "days_read": [
+        "2026-06-16",
+        "2026-06-17",
+        "2026-06-18",
+        "2026-06-19",
+        "2026-06-20",
+        "2026-06-21",
+        "2026-06-22",
+        "2026-06-26"
+      ],
+      "total_days_read": 8,
+      "consecutive_perfect_weeks": 0,
+      "this_week_missed": true,
+      "last_checkin": "2026-06-26",
+      "last_book": "فصل هجرت، \nمحمد پیغمبری که از نو باید شناخت",
+      "last_takeaways": [
+        "ابوبکر در جواب رییس قبیله مزبور ( رفاعی) پیغام فرستاد که من نمیتوانم از دین خود صرفنظر کنم و نیز نمیتوانم از لذت بلند خواندن قرآن صرفنظر نمایم زیرا جان من بسته به این آیات است که با صدای بلند می‌خوانم و اگر تو حق جوار را از من پس بگیری ، مختاری و من بعد از این مثل محمد ( ص) خود را در جوار خداوند قرار خواهم داد.",
+        "ولی در آن موقع نه خدیجه بود و نه ابوطالب.\nپیغمبر اسلام که به کلی خود را تنها دید، مرتبه دیگر متوسل به خداوند شد و از خدا خواست که وی را تحت حمایت قرار دهد..... خداوند پیغمبر را از زمین به آسمان رسانید و مسلمین این مسافرت را معراج می‌نامند.",
+        "محمد به غلام عیسوی گفت: من پیغمبر خدا هستم و خدائی که مرا فرستاد واحد و از این جهت به من سنگ میزنند و میخواهند مرا به قتل برسانند.",
+        "... اعضای طایفه قریش ، بالاخره متوجه شدند برای اینکه از خطر محمد ص ایمن باشند باید او را بقتل برسانند."
+      ],
+      "is_active": true,
+      "kicked_at": null,
+      "joined_at": "2026-06-16"
+    },
+    "119158828": {
+      "uid": "119158828",
+      "username": "unknown",
+      "full_name": "Maryam Abdollahi",
+      "lives": 2,
+      "days_read": [
+        "2026-06-16",
+        "2026-06-18",
+        "2026-06-19",
+        "2026-06-21",
+        "2026-06-22",
+        "2026-06-23",
+        "2026-06-25",
+        "2026-06-26",
+        "2026-06-27",
+        "2026-06-28"
+      ],
+      "total_days_read": 10,
+      "consecutive_perfect_weeks": 0,
+      "this_week_missed": false,
+      "last_checkin": "2026-06-28",
+      "last_book": null,
+      "last_takeaways": [],
+      "is_active": true,
+      "kicked_at": null,
+      "joined_at": "2026-06-16"
+    },
+    "205310919": {
+      "uid": "205310919",
+      "username": "makargar",
+      "full_name": "محمد علی کارگر",
+      "lives": 1,
+      "days_read": [
+        "2026-06-17",
+        "2026-06-19"
+      ],
+      "total_days_read": 2,
+      "consecutive_perfect_weeks": 0,
+      "this_week_missed": true,
+      "last_checkin": "2026-06-19",
+      "last_book": "تاب آوری",
+      "last_takeaways": [
+        "باید در مقابل مشکلات صبر داشت."
+      ],
+      "is_active": true,
+      "kicked_at": null,
+      "joined_at": "2026-06-17"
+    },
+    "549187471": {
+      "uid": "549187471",
+      "username": "misaqqe",
+      "full_name": "Mi Gh",
+      "lives": 1,
+      "days_read": [
+        "2026-06-17",
+        "2026-06-23",
+        "2026-06-26"
+      ],
+      "total_days_read": 3,
+      "consecutive_perfect_weeks": 0,
+      "this_week_missed": true,
+      "last_checkin": "2026-06-26",
+      "last_book": null,
+      "last_takeaways": [],
+      "is_active": true,
+      "kicked_at": null,
+      "joined_at": "2026-06-17"
+    },
+    "96616799": {
+      "uid": "96616799",
+      "username": "Mahdi_Morsali",
+      "full_name": "Mahdi Morsali",
+      "lives": 1,
+      "days_read": [
+        "2026-06-17"
+      ],
+      "total_days_read": 1,
+      "consecutive_perfect_weeks": 0,
+      "this_week_missed": true,
+      "last_checkin": "2026-06-17",
+      "last_book": null,
+      "last_takeaways": [],
+      "is_active": true,
+      "kicked_at": null,
+      "joined_at": "2026-06-17"
+    },
+    "5151553114": {
+      "uid": "5151553114",
+      "username": "unknown",
+      "full_name": "Masoumeh Gh.",
+      "lives": 2,
+      "days_read": [
+        "2026-06-22"
+      ],
+      "total_days_read": 1,
+      "consecutive_perfect_weeks": 0,
+      "this_week_missed": true,
+      "last_checkin": "2026-06-22",
+      "last_book": null,
+      "last_takeaways": [],
+      "is_active": true,
+      "kicked_at": null,
+      "joined_at": "2026-06-22"
     }
-  }
+  },
+  "last_processed_date": "2026-06-28"
 }
