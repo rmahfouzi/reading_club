@@ -196,12 +196,15 @@ MESSAGE 4a — Weekly leaderboard:
   Format and send this message (in Persian):
 
   «📊 نتایج هفته‌ی [WEEK_ID]
+━━━━━━━━━━━━━━━━━━━━━━
 
 🥇 [rank 1 name] — [weekly_count] روز [medal or book emoji based on last_book]
 🥈 [rank 2 name] — [weekly_count] روز
 🥉 [rank 3 name] — [weekly_count] روز
+• [rank 4 name] — [weekly_count] روز
 ...
 
+━━━━━━━━━━━━━━━━━━━━━━
 📚 مجموع روزهای مطالعه این هفته: [sum of all weekly_counts] روز
 🔥 رکورد باشگاه: [longest_streak] روز پشت سر هم — [full_name of that user]»
 
@@ -216,26 +219,43 @@ MESSAGE 4a — Weekly leaderboard:
 ──────────────────────────────────────
 MESSAGE 4b — Life deductions (send ONLY if lives_lost_users is non-empty):
 
-  For each user in lives_lost_users, include one line showing their remaining
-  lives as repeated ❤️ emojis (e.g. 2 lives = ❤️❤️, 1 life = ❤️, 0 lives = 💔):
-  «• [full_name]: این هفته [weekly_count] روز خوندی — یه ❤️ از دست دادی. جون باقی‌مونده: [lives_remaining_emojis]»
+  For each user in lives_lost_users, build a 3-line block showing their
+  remaining lives as repeated ❤️ emojis (e.g. 2 lives = ❤️❤️, 1 life = ❤️,
+  0 lives = 💔):
 
-  Wrap all lines in a single message:
+  💔 [full_name]
+  این هفته [weekly_count] روز خوندی — یه ❤️ از دست دادی
+  جون باقی‌مونده: [lives_remaining_emojis]
+
+  Join the blocks for consecutive users with a separator line on its own line:
+  ┄┄┄┄┄┄┄┄┄┄┄┄┄┄
+  (place this separator strictly BETWEEN user blocks — one fewer separator
+  than the number of users; never before the first block or after the last)
+
+  Wrap everything in a single message:
   «😔 این هفته یه سری از دوستامون به هدف نرسیدن:
-[per-user lines]
+━━━━━━━━━━━━━━━━━━━━━━
+[per-user blocks joined by the ┄┄┄┄┄┄┄┄┄┄┄┄┄┄ separator]
+━━━━━━━━━━━━━━━━━━━━━━
 نگران نباشید — هفته‌ی بعد می‌تونید جبران کنید! 💪»
 
 ──────────────────────────────────────
 MESSAGE 4c — Life restorations (send ONLY if restored_users is non-empty):
 
   «🎉 تبریک!
-[for each restored user]: [full_name] به خاطر ۲ هفته‌ی کامل، یه ❤️ برگشت! (❤️×[new lives count])»
+━━━━━━━━━━━━━━━━━━━━━━
+❤️‍🩹 [full_name] به خاطر ۲ هفته‌ی کامل، یه ❤️ برگشت! (❤️×[new lives count])
+[one such line per restored user]
+━━━━━━━━━━━━━━━━━━━━━━»
 
 ──────────────────────────────────────
 MESSAGE 4d — Eliminations (send ONLY if eliminated_users is non-empty):
 
   «😢 متأسفانه این اعضا این هفته تمام زندگی‌هاشون رو از دست دادن و از گروه خارج می‌شن:
-[for each]: • [full_name]
+━━━━━━━━━━━━━━━━━━━━━━
+💔 [full_name]
+[one such line per eliminated user]
+━━━━━━━━━━━━━━━━━━━━━━
 موفق باشن! می‌تونن دوباره عضو بشن و از صفر شروع کنن.»
 
 ═══════════════════════════════════════
