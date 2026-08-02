@@ -26,7 +26,7 @@ skill and inspect the resulting JSON/log files.
 ```
 reading_club/
 ├── reading_db.json         # persistent: config + per-user lives/streaks/history
-├── daily_logs.txt          # transient: today's CHECKIN/READING_NOTE entries (JSON Lines, gitignored)
+├── daily_logs.txt          # transient: today's CHECKIN/READING_NOTE/JOIN entries (JSON Lines, gitignored)
 ├── message_counts.json     # transient: per-day per-user DM quota counters (gitignored)
 ├── log_archive/             # one archived daily_logs file per processed day (gitignored)
 ├── welcome_message.md       # Persian text pinned in the Telegram group (manual copy/paste)
@@ -36,13 +36,18 @@ reading_club/
 │   └── .env.example
 └── skills/
     ├── reading-club-enforcer/SKILL.md  # 08:00 Europe/Stockholm cron — scoring & moderation
-    └── reading-club-reminder/SKILL.md  # 21:00 Europe/Stockholm cron — group nudge
+    └── reading-club-reminder/SKILL.md  # 20:00 Europe/Stockholm cron — group nudge
 ```
 
 Data flows in one direction through the day:
 
 1. A member DMs the report bot → `report_bot.py` appends `CHECKIN`/
-   `READING_NOTE` JSON lines to `daily_logs.txt`.
+   `READING_NOTE` JSON lines to `daily_logs.txt`. The report bot also
+   watches the group for `new_chat_members` service updates (Telegram
+   delivers these to bots regardless of privacy mode) and appends a `JOIN`
+   line for each new human member — this is what lets the enforcer track
+   members who join but never DM a check-in; without it they'd have no
+   `db.users` record at all and would never be weekly-enforced or kicked.
 2. The next morning, `reading-club-enforcer` reads `daily_logs.txt`, folds it
    into `reading_db.json` (per-user `days_read`, `lives`, streaks), then
    archives the raw log to `log_archive/daily_logs_<date>.txt` and truncates
@@ -73,11 +78,17 @@ Python, no LLM, so there's no prompt-injection surface. Key points:
   survives reboots even if env vars are lost.
 - 8-messages/day quota per user (Europe/Stockholm calendar day) in
   `message_counts.json`, plus a same-day duplicate-CHECKIN guard read
-  straight from `daily_logs.txt`.
-- Writes the exact same `CHECKIN` / `READING_NOTE` JSON-line schema the
-  enforcer expects (see below) — if you change this schema, update both
+  straight from `daily_logs.txt`. The quota/dedup logic only applies to the
+  DM conversation — the group-join watcher below isn't quota-limited.
+- Writes the exact same `CHECKIN` / `READING_NOTE` / `JOIN` JSON-line schema
+  the enforcer expects (see below) — if you change this schema, update both
   `report_bot.py`'s `append_log_entry()` and the enforcer's parsing logic
   and schema docs together.
+- Also holds a `MessageHandler` (non-conversation) that fires on
+  `new_chat_members` updates in the configured group chat and logs a `JOIN`
+  entry per new human member (bots are skipped). This is a regular group
+  member, not an admin, but Telegram still delivers this specific service
+  update regardless of privacy mode.
 - Config is via env vars (`REPORT_BOT_TOKEN`, optional
   `DB_FILE`/`LOG_FILE`/`MSG_COUNT_FILE`/`MAX_DAILY_MESSAGES`) — see
   `report_bot/.env.example`.
@@ -105,7 +116,7 @@ followed by a `<system>` prompt and `<tools>` reference.
     per the ERROR HANDLING section) and sends one plain-English daily report
     to `ADMIN_USER_ID`, including that error list (or "No errors").
 
-- **`reading-club-reminder`** (cron, `0 21 * * *` Europe/Stockholm)
+- **`reading-club-reminder`** (cron, `0 20 * * *` Europe/Stockholm)
   - Only tool: `telegram.sendMessage`. Sends one fixed Persian message to the
     group, no state read/write. References the report bot's username,
     `@ketabyaar_bot`.

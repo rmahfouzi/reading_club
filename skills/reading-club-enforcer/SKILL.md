@@ -72,7 +72,7 @@ TASK 1 — LOAD STATE
     Call fs.readFile("./daily_logs.txt").
     Split by newline. Parse each non-empty line as JSON.
     Ignore any line that cannot be parsed (corrupt/partial write — skip silently).
-    Collect only entries where type == "CHECKIN" or type == "READING_NOTE".
+    Collect only entries where type == "CHECKIN", "READING_NOTE", or "JOIN".
 
 1c. Determine the processing date:
     This routine runs each morning in Europe/Stockholm time, processing the
@@ -125,6 +125,34 @@ For each READING_NOTE entry in today's log:
     If entry.book is not null: set db.users[uid].last_book = entry.book
     If entry.takeaway is not null: append entry.takeaway to db.users[uid].last_takeaways
       (keep only the most recent 7 takeaways to bound memory usage)
+
+For each JOIN entry in today's log (sent by the report bot when it observes a
+new_chat_members event in the group — this is the only signal that a member
+exists at all if they never check in, so it MUST run even though it never
+touches days_read):
+  uid = entry.uid
+
+  2d. If db.users[uid] does not exist:
+      Create a new record using the user template (see DATABASE SCHEMA).
+      Populate username and full_name from the log entry.
+      Set joined_at = processing_date.
+      (Do NOT touch days_read/total_days_read — a JOIN is not a check-in.)
+
+  2e. If db.users[uid] exists and is_active == true:
+      No-op (duplicate/redundant join event — already tracked).
+
+  2f. If db.users[uid] exists and is_active == false (previously kicked or
+      left, now rejoined):
+      Reset for a fresh start, per the documented rejoin policy ("می‌تونن
+      دوباره عضو بشن و از صفر شروع کنن"):
+        lives = MAX_LIVES
+        days_read = []
+        consecutive_perfect_weeks = 0
+        this_week_missed = false
+        is_active = true
+        kicked_at = null
+        joined_at = processing_date
+      Leave total_days_read unchanged (lifetime counter, not part of the reset).
 
 ═══════════════════════════════════════
 TASK 3 — SUNDAY WEEKLY ENFORCEMENT

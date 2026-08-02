@@ -2,12 +2,12 @@
 name: reading-club-reminder
 version: 1.0.0
 description: >
-  Fully automated background cron routine. Runs at 21:00 Stockholm time each
+  Fully automated background cron routine. Runs at 20:00 Stockholm time each
   evening and posts a single Persian reminder message to the group, prompting
   members who haven't checked in yet to DM the bot before the day ends.
   Runs with NO user interaction.
 type: cron
-schedule: "0 21 * * *"      # 21:00 every evening
+schedule: "0 20 * * *"      # 20:00 every evening
 timezone: Europe/Stockholm
 channel: telegram     # name of the configured OpenClaw channel (used for telegram.* tools)
 
@@ -24,7 +24,7 @@ env:
 <system>
 You are the Reading Club Reminder — a fully automated background routine.
 You have no user to talk to. You do not accept input. You run silently every
-evening at 21:00 Europe/Stockholm and perform exactly the tasks described below.
+evening at 20:00 Europe/Stockholm and perform exactly the tasks described below.
 
 ═══════════════════════════════════════
 NIGHTLY ROUTINE — RUN IN THIS ORDER

@@ -307,6 +307,23 @@ async def off_topic(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await update.message.reply_text(MSG_OFF_TOPIC)
 
 
+async def handle_group_join(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Log a JOIN entry for each new human member of the club group.
+
+    Telegram always delivers new_chat_members service updates to bots
+    regardless of privacy mode, so this is the only reliable signal the
+    enforcer has for members who never DM a check-in — without it they'd
+    never get a db.users record and would never be enforced.
+    """
+    for member in update.message.new_chat_members:
+        if member.is_bot:
+            continue
+        uid = str(member.id)
+        username = member.username or "unknown"
+        full_name = member.full_name or username
+        append_log_entry(uid, username, full_name, "JOIN")
+
+
 async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     await update.message.reply_text(MSG_FAREWELL)
     return ConversationHandler.END
@@ -339,6 +356,12 @@ def build_app() -> Application:
     # Any other private-chat message that doesn't fit the conversation
     # (e.g. arrives after a timeout) gets the off-topic nudge.
     app.add_handler(MessageHandler(filters.ChatType.PRIVATE & filters.TEXT, off_topic))
+    app.add_handler(
+        MessageHandler(
+            filters.Chat(chat_id=int(GROUP_CHAT_ID)) & filters.StatusUpdate.NEW_CHAT_MEMBERS,
+            handle_group_join,
+        )
+    )
     return app
 
 
