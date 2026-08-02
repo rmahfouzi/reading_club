@@ -139,6 +139,11 @@ security boundary — never give a cron skill a `trigger: dm`, and never add
 - Weekly count < 5 → lose 1 life; weekly count == 7 (perfect week) builds
   `consecutive_perfect_weeks`; 2 perfect weeks restore 1 life (capped at
   `max_lives`).
+- Grace week: if a member's `joined_at` falls in the ISO week just evaluated
+  (a mid-week join/rejoin), that week is exempt from life deduction and
+  perfect-week credit — see enforcer `SKILL.md` TASK 3 step 3b. Otherwise
+  someone joining Wednesday could never mathematically reach 5 check-ins by
+  Sunday and would lose a life through no fault of their own.
 - 0 lives → automatic kick (`telegram.kickChatMember`), `is_active` set to
   `false`.
 

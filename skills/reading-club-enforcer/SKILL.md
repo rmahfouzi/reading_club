@@ -183,8 +183,18 @@ For each uid in db.users:
       identified by week_id (the week that ended on processing_date, which is Sunday).
       Call this weekly_count.
 
-  3b. Evaluate performance:
-      IF weekly_count >= 7 (read every day):
+  3b. Determine grace week: is_first_week = true if the ISO week containing
+      user.joined_at is the same ISO week as week_id — i.e. they joined (or
+      rejoined, per step 2f) during the week that just ended. A member who
+      joined mid-week never had a full Mon–Sun window to hit MIN_WEEKLY_DAYS,
+      so their first calendar week is always a free pass: no life deduction
+      and no perfect-week credit, regardless of weekly_count. Their
+      weekly_count is still recorded for the leaderboard (step 3e) and
+      this_week_missed stays false.
+
+  3c. Evaluate performance (skip entirely if is_first_week — see 3b):
+      IF is_first_week: do nothing here (grace week; this_week_missed stays false).
+      ELSE IF weekly_count >= 7 (read every day):
         user.consecutive_perfect_weeks += 1
         user.this_week_missed = false
       ELSE IF weekly_count >= MIN_WEEKLY_DAYS (5):
@@ -196,18 +206,18 @@ For each uid in db.users:
         user.lives -= 1
         if user.lives < 0: user.lives = 0
 
-  3c. Life restoration — check AFTER deduction:
+  3d. Life restoration — check AFTER deduction:
       IF user.consecutive_perfect_weeks >= PERFECT_WEEKS_FOR_LIFE_RESTORE (2):
         AND user.lives < MAX_LIVES (3):
           user.lives += 1
           user.consecutive_perfect_weeks = 0   # reset after reward
           mark user for LIFE_RESTORED message
 
-  3d. Categorize users for messaging:
-      - lives_lost_users: users who had lives deducted in step 3b (weekly_count < 5),
-        regardless of how many lives they have left
+  3e. Categorize users for messaging:
+      - lives_lost_users: users who had lives deducted in step 3c (weekly_count < 5
+        AND not a grace week), regardless of how many lives they have left
       - eliminated_users: lives == 0 (subset of lives_lost_users)
-      - restored_users: marked in step 3c
+      - restored_users: marked in step 3d
       - weekly_count for each user (needed for leaderboard)
 
 ═══════════════════════════════════════
