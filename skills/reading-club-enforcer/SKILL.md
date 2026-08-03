@@ -167,11 +167,22 @@ Skip this entire task if today is NOT Sunday.
       Set db.users[uid].is_active = false.
       Set db.users[uid].kicked_at = processing_date.
       Record an error: "User <full_name> (uid=<uid>) had left the group; marked inactive."
-    If telegram.getChatMember fails (API error): leave is_active unchanged,
-      record an error: "getChatMember failed for user <full_name> (uid=<uid>):
-      <reason if known>." and immediately send a plain-English alert to
-      ADMIN_USER_ID: "⚠️ reading-club-enforcer: getChatMember failed for
-      <full_name> (uid=<uid>) during Sunday membership sync — membership
+    ELSE IF telegram.getChatMember fails with a "member not found" Bad Request
+      (Telegram's response when a uid is not/no longer a resolvable chat
+      participant — the routine outcome for someone who joined and left again
+      before this sync ran, not an operational fault):
+      Treat this the same as "left":
+      Set db.users[uid].is_active = false.
+      Set db.users[uid].kicked_at = processing_date.
+      Record an error: "User <full_name> (uid=<uid>) returned 'member not
+      found' from getChatMember (joined and left before sync ran); marked
+      inactive." Do NOT send an admin alert for this specific case.
+    ELSE IF telegram.getChatMember fails for any other reason (rate limit,
+      network error, auth failure, unrecognized error, etc.): leave is_active
+      unchanged, record an error: "getChatMember failed for user <full_name>
+      (uid=<uid>): <reason if known>." and immediately send a plain-English
+      alert to ADMIN_USER_ID: "⚠️ reading-club-enforcer: getChatMember failed
+      for <full_name> (uid=<uid>) during Sunday membership sync — membership
       status unknown, skipping enforcement for this user."
 
 For each uid in db.users:
@@ -304,7 +315,16 @@ For each uid in db.users where lives == 0 AND is_active == true:
 
   5a. Verify the user is still in the group:
       Call telegram.getChatMember(chat_id=GROUP_CHAT_ID, user_id=uid).
-      If the result status is "left" or "kicked", skip (already gone).
+      If the result status is "left" or "kicked", OR the call fails with a
+      "member not found" Bad Request: treat as already gone — set
+      db.users[uid].is_active = false, db.users[uid].kicked_at =
+      processing_date, and skip 5b/5c below (do not call kickChatMember on
+      someone who isn't there).
+      If the call fails for any other reason (rate limit, network error,
+      auth failure, etc.): record an error: "getChatMember failed for user
+      <full_name> (uid=<uid>) before kick attempt: <reason if known>." and
+      skip this user this run (do not attempt to kick without confirming
+      membership first).
 
   5b. Kick the user:
       Call telegram.kickChatMember(chat_id=GROUP_CHAT_ID, user_id=uid).
